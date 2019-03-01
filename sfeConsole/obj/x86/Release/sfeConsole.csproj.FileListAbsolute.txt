@@ -1,6 +1,0 @@
-E:\my_floder\sfe2\ConsoleImz\bin\Release\sfeConsole.exe.config
-E:\my_floder\sfe2\ConsoleImz\bin\Release\sfeConsole.exe
-E:\my_floder\sfe2\ConsoleImz\bin\Release\sfeConsole.pdb
-E:\my_floder\sfe2\ConsoleImz\obj\x86\Release\sfeConsole.csprojResolveAssemblyReference.cache
-E:\my_floder\sfe2\ConsoleImz\obj\x86\Release\sfeConsole.exe
-E:\my_floder\sfe2\ConsoleImz\obj\x86\Release\sfeConsole.pdb

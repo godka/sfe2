@@ -188,9 +188,25 @@ namespace imzopr
                 {
                     for (int i = 0; i < tmprle.Length; i++)
                     {
+                        int area = tmprle[i].Height * tmprle[i].width;
+                        //PNG inside grp
+                        if (tmprle[i].width > 512)
+                        {
+                            short a = 9999;
+                            br.Write(a);
+                            br.Write(a);
+                            FileStream ppp = new FileStream(string.Format(@"./{0}/{1}.png", filepath, i), FileMode.Create);
+                            BinaryWriter pppp = new BinaryWriter(ppp);
+                            pppp.Write(tmprle[i].width);
+                            pppp.Write(tmprle[i].Height);
+                            pppp.Write(tmprle[i].x);
+                            pppp.Write(tmprle[i].y);
+                            pppp.Write(tmprle[i].data, 0, tmprle[i].datalong);
+                            continue;
+                        }
                         br.Write(tmprle[i].x);
                         br.Write(tmprle[i].y);
-                        if (tmprle[i].Height * tmprle[i].width > 1)
+                        if (area > 1)
                         {
                             bool isShape = false;
                             for (int j = 0; j < 8; j++)
@@ -266,10 +282,19 @@ namespace imzopr
                 piclong = PicWidth + i;
                 while (i < piclong)
                 {
+                    //Console.WriteLine(i);
+                    //if (i == 1032)
+                    //{
+                    //    i = i;
+                    //}
                     Px += data[i++];// i++;
                     masklong = data[i] + i + 1; i++;
                     while (i < masklong)
                     {
+                        if (i >= piclong)
+                        {
+                            break;
+                        }
                         int pos = Px + Py * width;
                         byte tmpbyte = data[i];
                         if (tmpbyte >= 0xe0 && tmpbyte <= 0xe7)
@@ -286,7 +311,10 @@ namespace imzopr
                             if (tmpbyte < 0xf4)
                                 tmpbyte += 8;
                         }
-                        s[pos] = JYcolor[0, tmpbyte].ARGB;
+                        if (pos < width * Height)
+                        {
+                            s[pos] = JYcolor[0, tmpbyte].ARGB;
+                        }
                         Px++; i++;
                     }
                 }

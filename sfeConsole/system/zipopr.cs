@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.Text;
 using ICSharpCode.SharpZipLib;
 using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.Checksums;
 using System.IO;
 
 namespace ConsoleImz

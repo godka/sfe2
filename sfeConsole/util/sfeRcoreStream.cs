@@ -27,12 +27,12 @@ using System.IO;
 using System.Data;
 using NPOI;
 using NPOI.HSSF.UserModel;
+using NPOI.XSSF.UserModel;
 using NPOI.HPSF;
 using NPOI.POIFS.FileSystem;
 using NPOI.SS.UserModel;
 using ICSharpCode.SharpZipLib;
 using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.Checksums;
 using System.Collections;
 //using System.
 namespace imzopr.rdata
@@ -224,8 +224,8 @@ namespace imzopr.rdata
                     {
                         string[] tmpstr = objectData[i][1][k].ToString().Split(':'); 
                         int tmplength = int.Parse(tmpstr[1]);
-                        if (tmplength == 20) 
-                            Console.WriteLine("1");
+                        //if (tmplength == 20) 
+                        //    Console.WriteLine("1");
                         switch (tmpstr[0])
                         {
                             case "int_data":
@@ -261,11 +261,11 @@ namespace imzopr.rdata
         {
             try
             {
-                HSSFWorkbook hssfworkbook;
+                XSSFWorkbook hssfworkbook;
                 List<object[][]> tmpResult = new List<object[][]>();
                 using (FileStream file = new FileStream(xlsFile, FileMode.Open, FileAccess.Read))
                 {
-                    hssfworkbook = new HSSFWorkbook(file);
+                    hssfworkbook = new XSSFWorkbook(file);
                 }
                 for (int sheetCount = 0; sheetCount < hssfworkbook.NumberOfSheets; sheetCount++)
                 {
@@ -275,16 +275,16 @@ namespace imzopr.rdata
                     List<object[]> tmpRowList = new List<object[]>();
                     while (rows.MoveNext())
                     {
-                        IRow row = (HSSFRow)rows.Current;
+                        IRow row = (XSSFRow)rows.Current;
                         List<object> tmpRow = new List<object>();
                         foreach (ICell cell in row.Cells)
                         {
                             switch (cell.CellType)
                             {
-                                case CellType.NUMERIC:
+                                case CellType.Numeric:
                                     tmpRow.Add(cell.NumericCellValue);
                                     break;
-                                case CellType.STRING:
+                                case CellType.String:
                                     tmpRow.Add(cell.StringCellValue);
                                     break;
                                 default:

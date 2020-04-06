@@ -27,12 +27,12 @@ using System.IO;
 using System.Data;
 using NPOI;
 using NPOI.HSSF.UserModel;
+using NPOI.XSSF.UserModel;
 using NPOI.HPSF;
 using NPOI.POIFS.FileSystem;
 using NPOI.SS.UserModel;
 using ICSharpCode.SharpZipLib;
 using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.Checksums;
 using System.Collections;
 //using System.
 namespace imzopr.rdata
@@ -169,20 +169,20 @@ namespace imzopr.rdata
                 Ridx = new List<string>();
             }
         }
-        public static void SaveRToXls(Stream filegrp, string fileidx, string inifilepath,string xlsFile)
+        public static void SaveRToXls(Stream filegrp, string fileidx, string inifilepath, string xlsFile)
         {
-            HSSFWorkbook newBook = new HSSFWorkbook();
+            XSSFWorkbook newBook = new XSSFWorkbook();
 
             List<object> rows = new List<object>();
             List<RdataType> datalist = ReadRanger(filegrp, fileidx, inifilepath);
             for (int k = 0; k < datalist.Count; k++)
             {
                 object[,] array = datalist[k].ToArray();
-                HSSFSheet newSheet = (HSSFSheet)newBook.CreateSheet(datalist[k].TypeName);//新建工作簿
+                XSSFSheet newSheet = (XSSFSheet)newBook.CreateSheet(datalist[k].TypeName);//新建工作簿
                 
                 for (int i = 0; i < array.GetLength(1); i++)
                 {
-                    HSSFRow newRow = (HSSFRow)newSheet.CreateRow(i);//创建行
+                    XSSFRow newRow = (XSSFRow)newSheet.CreateRow(i);//创建行
                     for (int j = 0; j < array.GetLength(0); j++)
                     {
                         if(array[j,i].GetType() == typeof(String))
@@ -191,7 +191,7 @@ namespace imzopr.rdata
                             newSheet.GetRow(i).CreateCell(j).SetCellValue((int)array[j, i]);
                     }
                 }
-                newSheet.AutoSizeColumn(-2);
+                //newSheet.AutoSizeColumn(-2);
             }
             FileStream fs = new FileStream(xlsFile, FileMode.Create);
             newBook.Write(fs);
@@ -224,8 +224,8 @@ namespace imzopr.rdata
                     {
                         string[] tmpstr = objectData[i][1][k].ToString().Split(':'); 
                         int tmplength = int.Parse(tmpstr[1]);
-                        if (tmplength == 20) 
-                            Console.WriteLine("1");
+                        //if (tmplength == 20) 
+                        //    Console.WriteLine("1");
                         switch (tmpstr[0])
                         {
                             case "int_data":
@@ -261,11 +261,11 @@ namespace imzopr.rdata
         {
             try
             {
-                HSSFWorkbook hssfworkbook;
+                XSSFWorkbook hssfworkbook;
                 List<object[][]> tmpResult = new List<object[][]>();
                 using (FileStream file = new FileStream(xlsFile, FileMode.Open, FileAccess.Read))
                 {
-                    hssfworkbook = new HSSFWorkbook(file);
+                    hssfworkbook = new XSSFWorkbook(file);
                 }
                 for (int sheetCount = 0; sheetCount < hssfworkbook.NumberOfSheets; sheetCount++)
                 {
@@ -275,16 +275,16 @@ namespace imzopr.rdata
                     List<object[]> tmpRowList = new List<object[]>();
                     while (rows.MoveNext())
                     {
-                        IRow row = (HSSFRow)rows.Current;
+                        IRow row = (XSSFRow)rows.Current;
                         List<object> tmpRow = new List<object>();
                         foreach (ICell cell in row.Cells)
                         {
                             switch (cell.CellType)
                             {
-                                case CellType.NUMERIC:
+                                case CellType.Numeric:
                                     tmpRow.Add(cell.NumericCellValue);
                                     break;
-                                case CellType.STRING:
+                                case CellType.String:
                                     tmpRow.Add(cell.StringCellValue);
                                     break;
                                 default:
@@ -321,7 +321,7 @@ namespace imzopr.rdata
         }
         public static List<RdataType> ReadRanger(Stream filegrp, string fileidx, string inifilepath)
         {
-            try
+            //try
             {
                 List<inilist.R_modify> rini = inilist.ini2list(inifilepath);
                 List<RdataType> RMem = new List<RdataType>();
@@ -434,9 +434,9 @@ namespace imzopr.rdata
                 filegrp.Close();
                 return RMem;
             }
-            catch
+            //catch
             {
-                return null;
+                //return null;
             }
         }
     }

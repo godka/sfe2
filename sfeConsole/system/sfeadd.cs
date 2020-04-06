@@ -34,6 +34,14 @@ namespace sfeadd
             for (int i = 0; i < big5bytes.Length; i++)
             {
                 if (big5bytes[i] == 255) big5bytes[i] = 0;
+                if (big5bytes[i] == 0)
+                {
+                    for (int j = i; j < big5bytes.Length; j++)
+                    {
+                        big5bytes[j] = 0;
+                    }
+                    break;
+                }
             }
             return System.Text.Encoding.GetEncoding("BIG5").GetString(big5bytes).Replace("\0","");
         }

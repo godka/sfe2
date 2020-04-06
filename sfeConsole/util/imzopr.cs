@@ -192,9 +192,13 @@ namespace imzopr
                         //PNG inside grp
                         if (tmprle[i].width > 512)
                         {
-                            short a = 9999;
+                            short a, b;
+                            a = (short)(tmprle[i].data[11] + tmprle[i].data[10] * 256);
+                            a /= 2;
                             br.Write(a);
-                            br.Write(a);
+                            b = (short)(tmprle[i].data[15] + tmprle[i].data[14] * 256);
+                            b /= 2;
+                            br.Write(b);
                             FileStream ppp = new FileStream(string.Format(@"./{0}/{1}.png", filepath, i), FileMode.Create);
                             BinaryWriter pppp = new BinaryWriter(ppp);
                             pppp.Write(tmprle[i].width);
@@ -809,7 +813,8 @@ namespace imzopr
         }
         public void UnpackagePic(string filename, string filepath)
         {
-
+            if (!File.Exists(filename))
+                return;
             if (!Directory.Exists(filepath))
                 Directory.CreateDirectory(filepath);
             using (FileStream fs = new FileStream(filename, FileMode.Open))
@@ -822,20 +827,20 @@ namespace imzopr
                         {
                             int num = br.ReadInt32();
                             List<int> startindex = new List<int>();
-                            startindex.Add(0);
+                            startindex.Add(4+num*4);
                             for (int i = 0; i < num; i++)
                             {
                                 startindex.Add(br.ReadInt32());
                             }
                             for(int i = 0;i<num;i++){
-                                fs.Seek(startindex[i + 1], SeekOrigin.Begin);
-                                indexbw.Write(br.ReadInt32());//x
-                                indexbw.Write(br.ReadInt32());//y
+                                fs.Seek(startindex[i], SeekOrigin.Begin);
+                                indexbw.Write(Convert.ToInt16(br.ReadInt32()));//x
+                                indexbw.Write(Convert.ToInt16(br.ReadInt32()));//y
                                 br.ReadInt32();
                                 string tmpstr = string.Format(@"./{0}/{1}.png", filepath, i);
                                 using (FileStream fspng = new FileStream(tmpstr, FileMode.Create))
                                 {
-                                    byte[] tmpbyte = new byte[startindex[i + 1] - startindex[i]];
+                                    byte[] tmpbyte = new byte[startindex[i + 1] - startindex[i] - 12];
                                     fs.Read(tmpbyte, 0, tmpbyte.Length);
                                     fspng.Write(tmpbyte, 0, tmpbyte.Length);
                                 }
